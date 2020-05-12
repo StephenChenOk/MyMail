@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.adapter.DraftAdapter;
 import com.chen.fy.mymail.beans.DraftItem;
-import com.chen.fy.mymail.interfaces.IDraftItemClickListener;
+import com.chen.fy.mymail.interfaces.IItemClickListener;
 import com.chen.fy.mymail.utils.DateUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
@@ -35,7 +35,7 @@ import cn.bmob.v3.listener.UpdateListener;
  * 草稿箱
  */
 public class DraftBoxActivity extends AppCompatActivity implements View.OnClickListener
-        , IDraftItemClickListener {
+        , IItemClickListener {
 
     final static int DRAFT_DETAIL_REQUEST_CODE = 4;
 
@@ -68,7 +68,7 @@ public class DraftBoxActivity extends AppCompatActivity implements View.OnClickL
         listData = getData();
 
         mAdapter = new DraftAdapter(this, listData);
-        mAdapter.setDraftItemClickListener(this);
+        mAdapter.setItemClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -115,7 +115,7 @@ public class DraftBoxActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onClickDraftItem(String subject, String address, String date, String content) {
+    public void onClickItem(String subject, String address, String date, String content) {
         //单击跳转草稿详情页面
         Intent intent = new Intent(this, DraftItemDetailActivity.class);
         intent.putExtra("subject", subject);
@@ -126,7 +126,7 @@ public class DraftBoxActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onLongClickDraftItem(String address) {
+    public void onLongClickItem(String address) {
         //长按删除草稿
         showDeletePopup(address);
     }

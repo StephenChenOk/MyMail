@@ -48,6 +48,10 @@
             android:theme="@style/MyTheme"/>
         <activity android:name=".activities.DraftItemDetailActivity"
             android:theme="@style/MyTheme"/>
+        <activity android:name=".activities.EmailDetailActivity"
+            android:theme="@style/MyTheme"/>
+        <activity android:name=".activities.SentDetailActivity"
+            android:theme="@style/MyTheme"/>
 
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"

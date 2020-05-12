@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.beans.DraftItem;
-import com.chen.fy.mymail.interfaces.IDraftItemClickListener;
+import com.chen.fy.mymail.interfaces.IItemClickListener;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class DraftAdapter extends RecyclerView.Adapter<DraftAdapter.ViewHolder> 
     private List<DraftItem> list;
     private Context context;
 
-    private IDraftItemClickListener mClickListener;
+    private IItemClickListener mClickListener;
 
     //构造方法,并传入数据源
     public DraftAdapter(Context context, List<DraftItem> list) {
@@ -32,7 +32,7 @@ public class DraftAdapter extends RecyclerView.Adapter<DraftAdapter.ViewHolder> 
         this.list = list;
     }
 
-    public void setDraftItemClickListener(IDraftItemClickListener clickListener) {
+    public void setItemClickListener(IItemClickListener clickListener) {
         this.mClickListener = clickListener;
     }
 
@@ -61,7 +61,7 @@ public class DraftAdapter extends RecyclerView.Adapter<DraftAdapter.ViewHolder> 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClickListener.onClickDraftItem(draftItem.getSubject()
+                mClickListener.onClickItem(draftItem.getSubject()
                         , draftItem.getRecipientAddress()
                         , draftItem.getCreatedAt()
                         , draftItem.getContent());
@@ -71,7 +71,7 @@ public class DraftAdapter extends RecyclerView.Adapter<DraftAdapter.ViewHolder> 
         viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mClickListener.onLongClickDraftItem(draftItem.getRecipientAddress());
+                mClickListener.onLongClickItem(draftItem.getRecipientAddress());
                 return true;
             }
         });

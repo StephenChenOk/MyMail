@@ -13,6 +13,7 @@ import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.adapter.SentAdapter;
 import com.chen.fy.mymail.beans.DraftItem;
 import com.chen.fy.mymail.beans.SentItem;
+import com.chen.fy.mymail.interfaces.IItemClickListener;
 import com.chen.fy.mymail.utils.DateUtils;
 import com.lxj.xpopup.core.BasePopupView;
 
@@ -29,8 +30,10 @@ import cn.bmob.v3.listener.FindListener;
 /**
  * 已发送
  */
-public class SentActivity extends AppCompatActivity implements View.OnClickListener{
+public class SentActivity extends AppCompatActivity implements View.OnClickListener
+        , IItemClickListener {
 
+    private static final int SENT_DETAIL_REQUEST_CODE = 6;
     private RecyclerView mRecyclerView;
     private SentAdapter mAdapter;
 
@@ -71,6 +74,7 @@ public class SentActivity extends AppCompatActivity implements View.OnClickListe
         listData = getData();
 
         mAdapter = new SentAdapter(this, listData);
+        mAdapter.setClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -119,4 +123,19 @@ public class SentActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public void onClickItem(String subject, String address, String date, String content) {
+        //单击跳转已发送邮件详情页面
+        Intent intent = new Intent(this, SentDetailActivity.class);
+        intent.putExtra("subject", subject);
+        intent.putExtra("address", address);
+        intent.putExtra("date", date);
+        intent.putExtra("content", content);
+        startActivityForResult(intent, SENT_DETAIL_REQUEST_CODE);
+    }
+
+    @Override
+    public void onLongClickItem(String address) {
+
+    }
 }

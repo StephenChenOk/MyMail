@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.beans.DraftItem;
 import com.chen.fy.mymail.beans.SentItem;
+import com.chen.fy.mymail.interfaces.IItemClickListener;
 
 import java.util.List;
 
@@ -24,10 +25,16 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
     private List<SentItem> list;
     private Context context;
 
+    private IItemClickListener mClickListener;
+
     //构造方法,并传入数据源
     public SentAdapter(Context context, List<SentItem> list) {
         this.context = context;
         this.list = list;
+    }
+
+    public void setClickListener(IItemClickListener clickListener) {
+        this.mClickListener = clickListener;
     }
 
     @NonNull
@@ -51,6 +58,20 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
         String[] strings = sentItem.getCreatedAt().split(" ");
         viewHolder.tvDate.setText(strings[0]);
         viewHolder.tvTime.setText(strings[1].substring(0, strings[1].length() - 3));
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mClickListener != null) {
+                    mClickListener.onClickItem(
+                            sentItem.getSubject()
+                            , sentItem.getRecipientAddress()
+                            , strings[0]+" "+strings[1].substring(0, strings[1].length() - 3)
+                            , sentItem.getContent()
+                    );
+                }
+            }
+        });
     }
 
     @Override

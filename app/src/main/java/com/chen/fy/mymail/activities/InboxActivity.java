@@ -16,6 +16,7 @@ import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.adapter.InboxAdapter;
 import com.chen.fy.mymail.asyncTasks.ReceiveAsyncTask;
 import com.chen.fy.mymail.beans.InboxItem;
+import com.chen.fy.mymail.interfaces.IItemClickListener;
 import com.chen.fy.mymail.interfaces.IReceiveAsyncResponse;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
@@ -25,8 +26,10 @@ import java.util.List;
 /**
  * 收件箱
  */
-public class InboxActivity extends AppCompatActivity implements View.OnClickListener, IReceiveAsyncResponse {
+public class InboxActivity extends AppCompatActivity implements View.OnClickListener,
+        IReceiveAsyncResponse , IItemClickListener {
 
+    private static final int EMAIL_DETAIL_REQUEST_CODE = 5;
     private RecyclerView mRecyclerView;
     private InboxAdapter mAdapter;
 
@@ -85,6 +88,7 @@ public class InboxActivity extends AppCompatActivity implements View.OnClickList
     public void onDataReceivedSuccess(List<InboxItem> listData) {
 
         mAdapter = new InboxAdapter(this, listData);
+        mAdapter.setClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
 
         mLoadingPopup.dismiss();
@@ -94,5 +98,33 @@ public class InboxActivity extends AppCompatActivity implements View.OnClickList
     public void onDataReceivedFailed() {
         Toast.makeText(this,"获取邮件失败",Toast.LENGTH_LONG).show();
         mLoadingPopup.dismiss();
+    }
+
+    @Override
+    public void onClickItem(String subject, String address, String date, String content) {
+        //单击跳转邮件详情页面
+        Intent intent = new Intent(this, EmailDetailActivity.class);
+        intent.putExtra("subject", subject);
+        intent.putExtra("address", address);
+        intent.putExtra("date", date);
+        intent.putExtra("content", content);
+        startActivityForResult(intent, EMAIL_DETAIL_REQUEST_CODE);
+    }
+
+    @Override
+    public void onLongClickItem(String address) {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case EMAIL_DETAIL_REQUEST_CODE:
+                if(resultCode == RESULT_OK){
+
+                }
+                break;
+        }
     }
 }

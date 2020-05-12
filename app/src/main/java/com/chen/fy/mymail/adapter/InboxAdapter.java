@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.beans.InboxItem;
+import com.chen.fy.mymail.interfaces.IItemClickListener;
 import com.chen.fy.mymail.utils.DateUtils;
 
 import java.util.List;
@@ -26,10 +27,16 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
     private List<InboxItem> list;
     private Context context;
 
+    private IItemClickListener clickListener;
+
     //构造方法,并传入数据源
     public InboxAdapter(Context context, List<InboxItem> list) {
         this.context = context;
         this.list = list;
+    }
+
+    public void setClickListener(IItemClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -48,10 +55,25 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
         Glide.with(context).load(inboxItem.getHeadIcon()).into(viewHolder.civHeadIcon);
         viewHolder.tvName.setText(inboxItem.getName());
         viewHolder.tvSubject.setText(inboxItem.getSubject());
-        viewHolder.tvContent.setText(inboxItem.getContent());
+        if (inboxItem.getContent() != null) {
+            viewHolder.tvContent.setText(inboxItem.getContent().replace("\n", ""));
+        }
 
         viewHolder.tvDate.setText(DateUtils.dateToDateString(inboxItem.getDate()));
         viewHolder.tvTime.setText(DateUtils.dateToTimeString(inboxItem.getDate()));
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clickListener != null) {
+                    clickListener.onClickItem(inboxItem.getSubject()
+                            , inboxItem.getName()
+                            , DateUtils.dateToDateString(inboxItem.getDate())
+                                    + " "+DateUtils.dateToTimeString(inboxItem.getDate())
+                            , inboxItem.getContent());
+                }
+            }
+        });
 
     }
 
