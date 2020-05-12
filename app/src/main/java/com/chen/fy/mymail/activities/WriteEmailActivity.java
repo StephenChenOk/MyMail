@@ -72,8 +72,8 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
 
     private void initData() {
         if (getIntent() != null) {
-            int type = getIntent().getIntExtra("type",-1);
-            switch (type){
+            int type = getIntent().getIntExtra("type", -1);
+            switch (type) {
                 case 1:     //从联系人界面跳转过来
                     String address = getIntent().getStringExtra("recipient");
                     etRecipient.setText(address);
@@ -102,7 +102,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                     String subject = etSubject.getText().toString();
                     String content = etContent.getText().toString();
                     if (!recipientAddress.isEmpty() && !subject.isEmpty() && !content.isEmpty()) {
-                        sendEmail(recipientAddress,subject,content);
+                        sendEmail(recipientAddress, subject, content);
                     } else {
                         Toast.makeText(this,
                                 "请填写完整各处信息", Toast.LENGTH_SHORT).show();
@@ -112,7 +112,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void sendEmail(String address,String subject,String content) {
+    private void sendEmail(String address, String subject, String content) {
         isSend = true;
         mSendPopup = new XPopup.Builder(this)
                 .asLoading("正在发送中...")
@@ -142,7 +142,18 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
 
     //保存草稿
     private void saveDraft() {
+        String recipientAddress = etRecipient.getText().toString();
+        String subject = etSubject.getText().toString();
+        String content = etContent.getText().toString();
+        if (!recipientAddress.isEmpty() && !subject.isEmpty() && !content.isEmpty()) {
+            saveDraftItem();
+        } else {
+            Toast.makeText(this, "请填写完整各处信息", Toast.LENGTH_SHORT).show();
+        }
 
+    }
+
+    private void saveDraftItem() {
         final BasePopupView loadingPopup = new XPopup.Builder(this)
                 .asLoading("保存草稿中")
                 .show();

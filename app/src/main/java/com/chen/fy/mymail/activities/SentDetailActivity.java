@@ -1,15 +1,27 @@
 package com.chen.fy.mymail.activities;
 
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.chen.fy.mymail.R;
-import com.chen.fy.mymail.interfaces.IItemClickListener;
+import com.chen.fy.mymail.beans.DraftItem;
+import com.chen.fy.mymail.beans.SentItem;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
+
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * 邮件Item详情信息
@@ -51,6 +63,7 @@ public class SentDetailActivity extends AppCompatActivity implements View.OnClic
 
         tvDetail.setOnClickListener(this);
         findViewById(R.id.iv_return_sent_detail).setOnClickListener(this);
+        findViewById(R.id.iv_delete_sent_detail).setOnClickListener(this);
     }
 
     private void initData() {
@@ -85,6 +98,9 @@ public class SentDetailActivity extends AppCompatActivity implements View.OnClic
                     vsDetail.setVisibility(View.GONE);
                 }
                 break;
+            case R.id.iv_delete_sent_detail:
+                showDeletePopup(mAddress);
+                break;
         }
     }
 
@@ -95,5 +111,78 @@ public class SentDetailActivity extends AppCompatActivity implements View.OnClic
 
         tvSender.setText(mAddress);
         tvDate.setText(mDate);
+    }
+
+    /**
+     * 显示删除的弹出框
+     */
+    private void showDeletePopup(String address) {
+
+        new XPopup.Builder(this)
+                .asConfirm("是否选择删除", "删除后此已发送邮件的信息将彻底消失",
+                        "取消", "确定",
+                        () -> querySentItemId(address),
+                        null,
+                        false)
+                .bindLayout(R.layout.delete_contact_person_popup)
+                .show();
+    }
+
+    /**
+     * 根据邮件地址查找草稿箱Item对应的Id
+     */
+    private void querySentItemId(String address) {
+        final BasePopupView loadingPopup = new XPopup.Builder(this)
+                .asLoading("正在删除中...")
+                .show();
+        loadingPopup.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        //根据邮件地址查询Id
+        BmobQuery<SentItem> query = new BmobQuery<>();
+        query.addWhereEqualTo("recipientAddress", address);
+        query.findObjects(new FindListener<SentItem>() {
+            @Override
+            public void done(List<SentItem> object, BmobException e) {
+                if (e == null) {
+                    for (SentItem sentItem : object) {
+                        deleteSentItem(loadingPopup, sentItem.getObjectId());
+                        break;
+                    }
+                } else {
+                    loadingPopup.dismiss();
+                    Toast.makeText(SentDetailActivity.this,
+                            "查询失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    /**
+     * 删除相应的草稿
+     */
+    private void deleteSentItem(BasePopupView loadingPopup, String objectId) {
+        SentItem sentItem = new SentItem();
+        sentItem.setObjectId(objectId);
+
+        sentItem.delete(new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                loadingPopup.dismiss();
+                if (e == null) {
+                    Toast.makeText(SentDetailActivity.this,
+                            "删除成功", Toast.LENGTH_LONG).show();
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    Toast.makeText(SentDetailActivity.this,
+                            "删除失败", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }

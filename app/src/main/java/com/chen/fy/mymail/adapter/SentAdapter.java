@@ -72,6 +72,14 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
                 }
             }
         });
+
+        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mClickListener.onLongClickItem(sentItem.getRecipientAddress());
+                return true;
+            }
+        });
     }
 
     @Override

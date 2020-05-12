@@ -17,6 +17,8 @@ public class SentItem extends BmobObject {
         this.content = content;
     }
 
+    public SentItem(){}
+
     public String getRecipientAddress() {
         return recipientAddress;
     }

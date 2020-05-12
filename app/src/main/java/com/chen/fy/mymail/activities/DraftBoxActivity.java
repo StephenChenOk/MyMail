@@ -137,6 +137,7 @@ public class DraftBoxActivity extends AppCompatActivity implements View.OnClickL
         switch (requestCode){
             case DRAFT_DETAIL_REQUEST_CODE:
                 if (resultCode == RESULT_OK){
+                    Log.d("chenyisheng","ssss");
                     initData();
                 }
                 break;
@@ -174,7 +175,7 @@ public class DraftBoxActivity extends AppCompatActivity implements View.OnClickL
 
         //根据邮件地址查询Id
         BmobQuery<DraftItem> query = new BmobQuery<>();
-        query.addWhereEqualTo("address", address);
+        query.addWhereEqualTo("recipientAddress", address);
         query.findObjects(new FindListener<DraftItem>() {
             @Override
             public void done(List<DraftItem> object, BmobException e) {
@@ -184,6 +185,7 @@ public class DraftBoxActivity extends AppCompatActivity implements View.OnClickL
                         break;
                     }
                 } else {
+                    loadingPopup.dismiss();
                     Log.d("chenyisheng", "查询失败");
                 }
             }
@@ -204,8 +206,7 @@ public class DraftBoxActivity extends AppCompatActivity implements View.OnClickL
                 if (e == null) {
                     Toast.makeText(DraftBoxActivity.this,
                             "删除成功", Toast.LENGTH_LONG).show();
-                    setResult(RESULT_OK);
-                    finish();
+                    initData();
                 } else {
                     Toast.makeText(DraftBoxActivity.this,
                             "删除失败", Toast.LENGTH_LONG).show();

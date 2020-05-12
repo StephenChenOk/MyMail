@@ -2,7 +2,10 @@ package com.chen.fy.mymail.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +18,7 @@ import com.chen.fy.mymail.beans.DraftItem;
 import com.chen.fy.mymail.beans.SentItem;
 import com.chen.fy.mymail.interfaces.IItemClickListener;
 import com.chen.fy.mymail.utils.DateUtils;
+import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 
 import java.util.ArrayList;
@@ -26,6 +30,7 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * 已发送
@@ -54,6 +59,9 @@ public class SentActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.iv_write_email_sent).setOnClickListener(this);
 
         mRecyclerView = findViewById(R.id.rv_sent);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);//1 表示列数
+        mRecyclerView.setLayoutManager(layoutManager);
     }
 
     private void initData() {
@@ -67,9 +75,6 @@ public class SentActivity extends AppCompatActivity implements View.OnClickListe
 //                return true;
 //            }
 //        });
-
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 1);//1 表示列数
-        mRecyclerView.setLayoutManager(layoutManager);
 
         listData = getData();
 
@@ -136,6 +141,90 @@ public class SentActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onLongClickItem(String address) {
+        //长按删除草稿
+        showDeletePopup(address);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case SENT_DETAIL_REQUEST_CODE:
+                if (resultCode == RESULT_OK){
+                    initData();
+                }
+                break;
+        }
+    }
+
+    /**
+     * 显示删除的弹出框
+     */
+    private void showDeletePopup(String address) {
+
+        new XPopup.Builder(this)
+                .asConfirm("是否选择删除", "删除后此联系人的信息将彻底消失",
+                        "取消", "确定",
+                        () -> querySentItemId(address),
+                        null,
+                        false)
+                .bindLayout(R.layout.delete_contact_person_popup)
+                .show();
+    }
+
+    /**
+     * 根据邮件地址查找草稿箱Item对应的Id
+     */
+    private void querySentItemId(String address) {
+        final BasePopupView loadingPopup = new XPopup.Builder(this)
+                .asLoading("正在删除中...")
+                .show();
+        loadingPopup.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        //根据邮件地址查询Id
+        BmobQuery<SentItem> query = new BmobQuery<>();
+        query.addWhereEqualTo("recipientAddress", address);
+        query.findObjects(new FindListener<SentItem>() {
+            @Override
+            public void done(List<SentItem> object, BmobException e) {
+                if (e == null) {
+                    for (SentItem sentItem : object) {
+                        deleteSentItem(loadingPopup, sentItem.getObjectId());
+                        break;
+                    }
+                } else {
+                    loadingPopup.dismiss();
+                    Log.d("chenyisheng", "查询失败");
+                }
+            }
+        });
+    }
+
+    /**
+     * 删除相应的草稿
+     */
+    private void deleteSentItem(BasePopupView loadingPopup, String objectId) {
+        SentItem sentItem = new SentItem();
+        sentItem.setObjectId(objectId);
+
+        sentItem.delete(new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                loadingPopup.dismiss();
+                if (e == null) {
+                    Toast.makeText(SentActivity.this,
+                            "删除成功", Toast.LENGTH_LONG).show();
+                    initData();
+                } else {
+                    Toast.makeText(SentActivity.this,
+                            "删除失败", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }
