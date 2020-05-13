@@ -9,36 +9,45 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/civ_head_icon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/user_test" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="15dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tv_name_inbox_item"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="陈生"
                     android:textColor="#333"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
+
+                <ViewStub
+                    android:id="@+id/vs_attachment_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout="@layout/vs_attachment_logo_layout"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -50,6 +59,7 @@
                         android:id="@+id/tv_date_inbox_item"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
                         android:text="2020-05-10"
                         android:textSize="12sp" />
 
@@ -58,6 +68,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
+                        android:layout_marginStart="5dp"
                         android:text="09:30"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -68,23 +79,23 @@
                 android:id="@+id/tv_subject_inbox_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="15dp"
                 android:ellipsize="end"
                 android:lines="1"
                 android:text="主题"
                 android:textColor="#333"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_content_inbox_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="21dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="5dp"
                 android:ellipsize="end"
                 android:lines="2"
                 android:text="内容"
-                android:textSize="14sp" />
+                android:textSize="13sp" />
 
         </LinearLayout>
     </LinearLayout>

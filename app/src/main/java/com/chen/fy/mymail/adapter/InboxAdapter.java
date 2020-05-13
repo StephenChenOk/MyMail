@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.beans.InboxItem;
+import com.chen.fy.mymail.interfaces.IInBoxItemClickListener;
 import com.chen.fy.mymail.interfaces.IItemClickListener;
 import com.chen.fy.mymail.utils.DateUtils;
 
@@ -27,7 +29,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
     private List<InboxItem> list;
     private Context context;
 
-    private IItemClickListener clickListener;
+    private IInBoxItemClickListener clickListener;
 
     //构造方法,并传入数据源
     public InboxAdapter(Context context, List<InboxItem> list) {
@@ -35,7 +37,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
         this.list = list;
     }
 
-    public void setClickListener(IItemClickListener clickListener) {
+    public void setClickListener(IInBoxItemClickListener clickListener) {
         this.clickListener = clickListener;
     }
 
@@ -62,15 +64,15 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
         viewHolder.tvDate.setText(DateUtils.dateToDateString(inboxItem.getDate()));
         viewHolder.tvTime.setText(DateUtils.dateToTimeString(inboxItem.getDate()));
 
+        if(inboxItem.getFile()!=null){
+            viewHolder.vsAttachmentLogo.inflate();
+        }
+
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (clickListener != null) {
-                    clickListener.onClickItem(inboxItem.getSubject()
-                            , inboxItem.getName()
-                            , DateUtils.dateToDateString(inboxItem.getDate())
-                                    + " "+DateUtils.dateToTimeString(inboxItem.getDate())
-                            , inboxItem.getContent());
+                    clickListener.onClickItem(inboxItem);
                 }
             }
         });
@@ -93,6 +95,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
         TextView tvContent;
         TextView tvDate;
         TextView tvTime;
+        ViewStub vsAttachmentLogo;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -102,6 +105,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
             tvContent = itemView.findViewById(R.id.tv_content_inbox_item);
             tvDate = itemView.findViewById(R.id.tv_date_inbox_item);
             tvTime = itemView.findViewById(R.id.tv_time_inbox_item);
+            vsAttachmentLogo = itemView.findViewById(R.id.vs_attachment_logo);
         }
     }
 

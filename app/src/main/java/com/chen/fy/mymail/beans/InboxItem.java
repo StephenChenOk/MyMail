@@ -1,6 +1,7 @@
 package com.chen.fy.mymail.beans;
 
 
+import java.io.File;
 import java.util.Date;
 
 public class InboxItem {
@@ -9,6 +10,7 @@ public class InboxItem {
     private String subject;
     private String content;
     private Date date;
+    private File file;
 
     public InboxItem(int headIcon, String name, String subject
             , String content, Date date) {
@@ -59,6 +61,14 @@ public class InboxItem {
         this.date = date;
     }
 
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
     @Override
     public String toString() {
         return "InboxItem{" +
@@ -66,7 +76,8 @@ public class InboxItem {
                 ", name='" + name + '\'' +
                 ", subject='" + subject + '\'' +
                 ", content='" + content + '\'' +
-                ", date=" + date.toString() +
+                ", date=" + date +
+                ", file=" + file +
                 '}';
     }
 }

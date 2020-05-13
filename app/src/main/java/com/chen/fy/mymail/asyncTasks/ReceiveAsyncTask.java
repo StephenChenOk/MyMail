@@ -1,39 +1,43 @@
 package com.chen.fy.mymail.asyncTasks;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 
 import com.chen.fy.mymail.R;
-import com.chen.fy.mymail.adapter.InboxAdapter;
 import com.chen.fy.mymail.beans.InboxItem;
 import com.chen.fy.mymail.interfaces.IReceiveAsyncResponse;
 import com.chen.fy.mymail.utils.DateUtils;
-import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.core.BasePopupView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
 import javax.mail.Address;
+import javax.mail.BodyPart;
 import javax.mail.Folder;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Part;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.internet.MimeUtility;
 
 
-public class ReceiveAsyncTask extends AsyncTask<Void, Integer, List<InboxItem>> {
+
+public class ReceiveAsyncTask extends AsyncTask<File, Integer, List<InboxItem>> {
 
     // 定义连接POP3服务器的属性信息
     String pop3Server = "pop.qq.com";
@@ -43,15 +47,17 @@ public class ReceiveAsyncTask extends AsyncTask<Void, Integer, List<InboxItem>> 
 
     private IReceiveAsyncResponse asyncResponse;
 
+    private int idFile = 1;
+
     public void setOnAsyncResponse(IReceiveAsyncResponse asyncResponse) {
         this.asyncResponse = asyncResponse;
     }
 
     @Override
-    protected List<InboxItem> doInBackground(Void... voids) {
+    protected List<InboxItem> doInBackground(File... files) {
 
         try {
-            return receiveMail();
+            return receiveMail(files[0]);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -69,7 +75,7 @@ public class ReceiveAsyncTask extends AsyncTask<Void, Integer, List<InboxItem>> 
         }
     }
 
-    private List<InboxItem> receiveMail() throws Exception {
+    private List<InboxItem> receiveMail(File file) throws Exception {
 
         ArrayList<InboxItem> inboxItems = new ArrayList<>();
 
@@ -95,7 +101,7 @@ public class ReceiveAsyncTask extends AsyncTask<Void, Integer, List<InboxItem>> 
             String[] froms = from.toString().split("<");
             String fromAddress;
             if (froms.length != 1) {
-                fromAddress = froms[1].substring(0, froms[1].length() - 2);
+                fromAddress = froms[1].substring(0, froms[1].length() - 1);
             } else {
                 fromAddress = froms[0];
             }
@@ -105,7 +111,8 @@ public class ReceiveAsyncTask extends AsyncTask<Void, Integer, List<InboxItem>> 
             String content = getAllMultipart(message);
             Date date = message.getSentDate();
 
-            Log.d("chenyisheng", date.toString());
+            File attachmentFile = new File(file, DateUtils.dateToDateString(date));
+            saveAttachment(message, attachmentFile);
 
             InboxItem inboxItem = new InboxItem(
                     R.drawable.user_test
@@ -113,6 +120,10 @@ public class ReceiveAsyncTask extends AsyncTask<Void, Integer, List<InboxItem>> 
                     , subject
                     , content
                     , date);
+            if(attachmentFile.length()>0) {
+                Log.d("hahahaha",":"+attachmentFile.length());
+                inboxItem.setFile(attachmentFile);
+            }
             inboxItems.add(inboxItem);
         }
 
@@ -199,5 +210,73 @@ public class ReceiveAsyncTask extends AsyncTask<Void, Integer, List<InboxItem>> 
 //           // getAllMultipart((Part) part.getContent());
 //
 //        }
+    }
+
+    /**
+     * 保存附件
+     * @param part 邮件中多个组合体中的其中一个组合体
+     * @param file 附件保存文件
+     */
+    public void saveAttachment(Part part, File file) throws UnsupportedEncodingException, MessagingException,
+            FileNotFoundException, IOException {
+        if (part.isMimeType("multipart/*")) {
+            Multipart multipart = (Multipart) part.getContent();    //复杂体邮件
+            //复杂体邮件包含多个邮件体
+            int partCount = multipart.getCount();
+            for (int i = 0; i < partCount; i++) {
+                //获得复杂体邮件中其中一个邮件体
+                BodyPart bodyPart = multipart.getBodyPart(i);
+                //某一个邮件体也有可能是由多个邮件体组成的复杂体
+                String disp = bodyPart.getDisposition();
+                if (disp != null && (disp.equalsIgnoreCase(Part.ATTACHMENT) || disp.equalsIgnoreCase(Part.INLINE))) {
+                    InputStream is = bodyPart.getInputStream();
+                    saveFile(is, file);
+                } else if (bodyPart.isMimeType("multipart/*")) {
+                    saveAttachment(bodyPart, file);
+                } else {
+                    String contentType = bodyPart.getContentType();
+                    if (contentType.indexOf("name") != -1 || contentType.indexOf("application") != -1) {
+                        saveFile(bodyPart.getInputStream(), file);
+                    }
+                }
+            }
+        } else if (part.isMimeType("message/rfc822")) {
+            saveAttachment((Part) part.getContent(), file);
+        }
+    }
+
+    /**
+     * 读取输入流中的数据保存至指定目录
+     *
+     * @param is   输入流
+     * @param file 附件保存文件
+     */
+    private File saveFile(InputStream is, File file)
+            throws FileNotFoundException, IOException {
+        BufferedInputStream bis = new BufferedInputStream(is);
+        BufferedOutputStream bos = new BufferedOutputStream(
+                new FileOutputStream(file));
+        int len = -1;
+        while ((len = bis.read()) != -1) {
+            bos.write(len);
+            bos.flush();
+        }
+        bos.close();
+        bis.close();
+        return file;
+    }
+
+    /**
+     * 文本解码
+     * @param encodeText 解码MimeUtility.encodeText(String text)方法编码后的文本
+     * @return 解码后的文本
+     * @throws UnsupportedEncodingException
+     */
+    public static String decodeText(String encodeText) throws UnsupportedEncodingException {
+        if (encodeText == null || "".equals(encodeText)) {
+            return "";
+        } else {
+            return MimeUtility.decodeText(encodeText);
+        }
     }
 }

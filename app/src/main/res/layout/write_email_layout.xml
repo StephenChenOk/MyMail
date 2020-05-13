@@ -88,8 +88,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textIsSelectable="true"
                 android:text="发件人： "
+                android:textIsSelectable="true"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -140,10 +140,38 @@
         <EditText
             android:id="@+id/et_input_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@null"
             android:gravity="top"
             android:hint="邮件内容"
             android:padding="10dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#eee" />
+
+        <ViewStub
+            android:id="@+id/vs_add_attachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/vs_add_attachment_layout"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#eee" />
+
+        <ImageView
+            android:id="@+id/iv_add_attachment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:background="@drawable/item_selector"
+            android:padding="10dp"
+            android:src="@drawable/ic_link_black_32dp" />
+
 
     </LinearLayout>
 

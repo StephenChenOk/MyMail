@@ -55,15 +55,15 @@
 
             <LinearLayout
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal">
 
                 <ViewStub
                     android:id="@+id/vs_email_detail"
-                    android:layout="@layout/vs_detail_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout="@layout/vs_detail_layout" />
 
                 <TextView
                     android:id="@+id/tv_sender_show_detail"
@@ -94,14 +94,20 @@
 
         <TextView
             android:id="@+id/tv_content_email_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginTop="5dp"
+            android:layout_weight="1"
             android:padding="10dp"
             android:text="内容"
             android:textColor="#000"
             android:textSize="18sp" />
 
-    </LinearLayout>
+        <ViewStub
+            android:id="@+id/vs_attachment_email_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/vs_attachment_email_detail_layout"/>
 
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
