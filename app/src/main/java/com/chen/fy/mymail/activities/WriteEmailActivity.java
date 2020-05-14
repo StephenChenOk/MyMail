@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
@@ -34,8 +35,10 @@ import com.zhihu.matisse.internal.entity.CaptureStrategy;
 import java.io.File;
 import java.util.List;
 
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UploadFileListener;
 
 /**
  * 写邮件
@@ -68,7 +71,7 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
             switch (msg.what) {
                 case SEND_SUCCESS_CODE:
                     mSendPopup.dismiss();
-                    Toast.makeText(WriteEmailActivity.this, (String) msg.obj, Toast.LENGTH_LONG).show();
+                    Toast.makeText(WriteEmailActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
                     saveSent();
                     break;
             }
@@ -256,14 +259,46 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         String content = etContent.getText().toString();
 
         SentItem sentItem = new SentItem(recipient, subject, content);
-        sentItem.save(new SaveListener<String>() {
+        insertObject(sentItem, loadingPopup);
+//        if (mAttachmentUri != null) {
+//            uploadFile(sentItem, loadingPopup);
+//        } else {
+//            insertObject(sentItem, loadingPopup);
+//        }
+    }
+
+    //上传图片到Bmob
+    private void uploadFile(SentItem sentItem, BasePopupView loadingPopup) {
+        File file = new File(FileUtils.getRealPathFromURI(this, mAttachmentUri));
+        BmobFile bmobFile = new BmobFile(file);
+        bmobFile.upload(new UploadFileListener() {
             @Override
-            public void done(String s, BmobException e) {
+            public void done(BmobException e) {
                 if (e == null) {
-                    loadingPopup.dismiss();
-                    finish();
+                    sentItem.setFile(bmobFile);
+                    insertObject(sentItem, loadingPopup);
                 } else {
                     e.printStackTrace();
+                    Log.i(TAG, "文件上传失败: " + e.toString());
+                }
+            }
+        });
+    }
+
+    //往bmob数据表中插入数据
+    private void insertObject(SentItem sentItem, final BasePopupView loadingPopup) {
+
+        sentItem.save(new SaveListener<String>() {
+            @Override
+            public void done(String objectId, BmobException e) {
+                loadingPopup.dismiss();
+                if (e == null) {
+                    Toast.makeText(WriteEmailActivity.this,
+                            "上传成功", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    Log.i(TAG, "上传失败：" + e.getMessage());
                 }
             }
         });

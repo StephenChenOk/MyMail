@@ -17,6 +17,7 @@ import com.chen.fy.mymail.adapter.SentAdapter;
 import com.chen.fy.mymail.beans.DraftItem;
 import com.chen.fy.mymail.beans.SentItem;
 import com.chen.fy.mymail.interfaces.IItemClickListener;
+import com.chen.fy.mymail.interfaces.ISentItemClickListener;
 import com.chen.fy.mymail.utils.DateUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
@@ -36,7 +37,7 @@ import cn.bmob.v3.listener.UpdateListener;
  * 已发送
  */
 public class SentActivity extends AppCompatActivity implements View.OnClickListener
-        , IItemClickListener {
+        , ISentItemClickListener {
 
     private static final int SENT_DETAIL_REQUEST_CODE = 6;
     private RecyclerView mRecyclerView;
@@ -129,13 +130,18 @@ public class SentActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClickItem(String subject, String address, String date, String content) {
+    public void onClickItem(SentItem sentItem) {
         //单击跳转已发送邮件详情页面
         Intent intent = new Intent(this, SentDetailActivity.class);
-        intent.putExtra("subject", subject);
-        intent.putExtra("address", address);
-        intent.putExtra("date", date);
-        intent.putExtra("content", content);
+        intent.putExtra("subject", sentItem.getSubject());
+        intent.putExtra("address", sentItem.getRecipientAddress());
+
+        String[] strings = sentItem.getCreatedAt().split(" ");
+        intent.putExtra("date", strings[0] + " "
+                + strings[1].substring(0, strings[1].length() - 3));
+
+        intent.putExtra("content", sentItem.getContent());
+        intent.putExtra("file", sentItem.getFile());
         startActivityForResult(intent, SENT_DETAIL_REQUEST_CODE);
     }
 
@@ -148,9 +154,9 @@ public class SentActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case SENT_DETAIL_REQUEST_CODE:
-                if (resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     initData();
                 }
                 break;

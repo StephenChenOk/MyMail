@@ -107,7 +107,7 @@
             android:id="@+id/vs_attachment_email_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout="@layout/vs_attachment_email_detail_layout"/>
+            android:layout="@layout/vs_attachment_info_layout"/>
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

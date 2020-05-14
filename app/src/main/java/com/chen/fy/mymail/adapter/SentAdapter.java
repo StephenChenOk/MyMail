@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.beans.DraftItem;
 import com.chen.fy.mymail.beans.SentItem;
 import com.chen.fy.mymail.interfaces.IItemClickListener;
+import com.chen.fy.mymail.interfaces.ISentItemClickListener;
 
 import java.util.List;
 
@@ -25,7 +27,7 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
     private List<SentItem> list;
     private Context context;
 
-    private IItemClickListener mClickListener;
+    private ISentItemClickListener mClickListener;
 
     //构造方法,并传入数据源
     public SentAdapter(Context context, List<SentItem> list) {
@@ -33,7 +35,7 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
         this.list = list;
     }
 
-    public void setClickListener(IItemClickListener clickListener) {
+    public void setClickListener(ISentItemClickListener clickListener) {
         this.mClickListener = clickListener;
     }
 
@@ -59,16 +61,15 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
         viewHolder.tvDate.setText(strings[0]);
         viewHolder.tvTime.setText(strings[1].substring(0, strings[1].length() - 3));
 
+        if(sentItem.getFile()!=null){
+            viewHolder.vsAttachmentLogo.inflate();
+        }
+
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mClickListener != null) {
-                    mClickListener.onClickItem(
-                            sentItem.getSubject()
-                            , sentItem.getRecipientAddress()
-                            , strings[0]+" "+strings[1].substring(0, strings[1].length() - 3)
-                            , sentItem.getContent()
-                    );
+                    mClickListener.onClickItem(sentItem);
                 }
             }
         });
@@ -98,6 +99,7 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
         TextView tvContent;
         TextView tvDate;
         TextView tvTime;
+        ViewStub vsAttachmentLogo;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -107,6 +109,7 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
             tvContent = itemView.findViewById(R.id.tv_content_inbox_item);
             tvDate = itemView.findViewById(R.id.tv_date_inbox_item);
             tvTime = itemView.findViewById(R.id.tv_time_inbox_item);
+            vsAttachmentLogo = itemView.findViewById(R.id.vs_attachment_logo);
         }
     }
 

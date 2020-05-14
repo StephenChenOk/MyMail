@@ -1,15 +1,17 @@
 package com.chen.fy.mymail.beans;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobFile;
 
 /**
- * 草稿Item
+ * 已发送Item
  */
 public class SentItem extends BmobObject {
 
     private String recipientAddress;
     private String subject;
     private String content;
+    private BmobFile file;     //附件
 
     public SentItem(String recipientAddress, String subject, String content) {
         this.recipientAddress = recipientAddress;
@@ -17,7 +19,8 @@ public class SentItem extends BmobObject {
         this.content = content;
     }
 
-    public SentItem(){}
+    public SentItem() {
+    }
 
     public String getRecipientAddress() {
         return recipientAddress;
@@ -43,12 +46,21 @@ public class SentItem extends BmobObject {
         this.content = content;
     }
 
+    public BmobFile getFile() {
+        return file;
+    }
+
+    public void setFile(BmobFile file) {
+        this.file = file;
+    }
+
     @Override
     public String toString() {
-        return "DraftItem{" +
+        return "SentItem{" +
                 "recipientAddress='" + recipientAddress + '\'' +
                 ", subject='" + subject + '\'' +
                 ", content='" + content + '\'' +
+                ", file=" + file +
                 '}';
     }
 }

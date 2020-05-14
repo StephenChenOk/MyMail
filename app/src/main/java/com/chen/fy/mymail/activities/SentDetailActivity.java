@@ -1,21 +1,26 @@
 package com.chen.fy.mymail.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.beans.DraftItem;
 import com.chen.fy.mymail.beans.SentItem;
+import com.chen.fy.mymail.utils.ZoomImageLoader;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 
+import java.io.File;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -35,8 +40,10 @@ public class SentDetailActivity extends AppCompatActivity implements View.OnClic
     private TextView tvContent;
     private TextView tvSenderShowDetail;
 
-    private ViewStub vsDetail;
+    private ViewStub vsDetail;  //显示详情
     private TextView tvDetail;
+
+    private ViewStub vsAttachment;  //显示附件信息
 
     private String mSubject;
     private String mAddress;
@@ -44,6 +51,7 @@ public class SentDetailActivity extends AppCompatActivity implements View.OnClic
     private String mContent;
 
     private boolean isInitViewStub = false;
+    private File mFile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +68,7 @@ public class SentDetailActivity extends AppCompatActivity implements View.OnClic
         tvContent = findViewById(R.id.tv_content_sent_detail);
         tvDetail = findViewById(R.id.tv_detail_sent_detail);
         tvSenderShowDetail = findViewById(R.id.tv_sender_show_detail_sent);
+        vsAttachment = findViewById(R.id.vs_attachment_sent_detail);
 
         tvDetail.setOnClickListener(this);
         findViewById(R.id.iv_return_sent_detail).setOnClickListener(this);
@@ -72,10 +81,40 @@ public class SentDetailActivity extends AppCompatActivity implements View.OnClic
             mSubject = getIntent().getStringExtra("subject");
             mDate = getIntent().getStringExtra("date");
             mContent = getIntent().getStringExtra("content");
+            mFile = (File) getIntent().getSerializableExtra("file");
 
             tvSenderShowDetail.setText(mAddress);
             tvSubject.setText(mSubject);
             tvContent.setText(mContent);
+
+            if (mFile != null) {
+                initAttachmentViewStub();
+            }
+        }
+    }
+
+    //初始化附件信息ViewStub
+    private void initAttachmentViewStub() {
+        vsAttachment.inflate();
+        ImageView ivAttachmentLogo = findViewById(R.id.iv_logo_attachment_info);
+        TextView ivAttachmentName = findViewById(R.id.tv_name_attachment_info);
+        TextView ivAttachmentSize = findViewById(R.id.tv_size_attachment_info);
+        findViewById(R.id.ll_attachment_box).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new XPopup.Builder(ivAttachmentLogo.getContext())
+                        .asImageViewer(
+                                ivAttachmentLogo
+                                , Uri.fromFile(mFile)
+                                , new ZoomImageLoader())
+                        .show();
+            }
+        });
+
+        if (mFile != null) {
+            Glide.with(this).load(mFile).into(ivAttachmentLogo);
+            ivAttachmentName.setText(mFile.getName());
+            ivAttachmentSize.setText((((int) mFile.length()) / 1024) + "k");
         }
     }
 

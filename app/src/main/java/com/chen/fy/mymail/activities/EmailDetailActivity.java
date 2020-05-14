@@ -1,5 +1,6 @@
 package com.chen.fy.mymail.activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewStub;
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.chen.fy.mymail.R;
+import com.chen.fy.mymail.utils.ZoomImageLoader;
+import com.lxj.xpopup.XPopup;
 
 import java.io.File;
 
@@ -109,24 +112,28 @@ public class EmailDetailActivity extends AppCompatActivity implements View.OnCli
         tvDate.setText(mDate);
     }
 
-    //初始化附件ViewStub
+    //初始化附件信息ViewStub
     private void initAttachmentViewStub() {
         vsAttachmentView.inflate();
-        ImageView ivAttachmentLogo = findViewById(R.id.iv_logo_attachment_email_detail);
-        TextView ivAttachmentName = findViewById(R.id.tv_name_attachment_email_detail);
-        TextView ivAttachmentSize = findViewById(R.id.tv_size_attachment_email_detail);
-
-        vsAttachmentView.setOnClickListener(new View.OnClickListener() {
+        ImageView ivAttachmentLogo = findViewById(R.id.iv_logo_attachment_info);
+        TextView ivAttachmentName = findViewById(R.id.tv_name_attachment_info);
+        TextView ivAttachmentSize = findViewById(R.id.tv_size_attachment_info);
+        findViewById(R.id.ll_attachment_box).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                new XPopup.Builder(ivAttachmentLogo.getContext())
+                        .asImageViewer(
+                                ivAttachmentLogo
+                                , Uri.fromFile(mFile)
+                                , new ZoomImageLoader())
+                        .show();
             }
         });
 
         if (mFile != null) {
             Glide.with(this).load(mFile).into(ivAttachmentLogo);
             ivAttachmentName.setText(mFile.getName());
-            ivAttachmentSize.setText((((int) mFile.length()) / 1024)+"k");
+            ivAttachmentSize.setText((((int) mFile.length()) / 1024) + "k");
         }
 
     }
