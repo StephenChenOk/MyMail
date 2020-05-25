@@ -12,13 +12,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="发件人：" />
+            android:text="发件人：1670617529@qq.com" />
 
         <TextView
             android:id="@+id/tv_sender_sent_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1670617529@qq.com"
             android:textColor="#444" />
 
     </LinearLayout>
@@ -34,11 +33,10 @@
             android:text="收件人：" />
 
         <TextView
-            android:id="@+id/tv_recipient_sent_detail"
+            android:id="@+id/tv_recipient_sent_detail_vs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="chenrf967@163.com"
-            android:textColor="#444" />
+            android:textColor="#555" />
 
     </LinearLayout>
 
@@ -56,7 +54,6 @@
             android:id="@+id/tv_date_sent_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2020-5-10 13:48"
             android:textColor="#444" />
 
     </LinearLayout>

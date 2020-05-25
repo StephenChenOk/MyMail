@@ -145,10 +145,10 @@ public class SentDetailActivity extends AppCompatActivity implements View.OnClic
 
     private void initDetailViewStub() {
         vsDetail.inflate();
-        tvSender = findViewById(R.id.tv_sender_sent_detail);
+        tvRecipient = findViewById(R.id.tv_recipient_sent_detail_vs);
         tvDate = findViewById(R.id.tv_date_sent_detail);
 
-        tvSender.setText(mAddress);
+        tvRecipient.setText(mAddress);
         tvDate.setText(mDate);
     }
 

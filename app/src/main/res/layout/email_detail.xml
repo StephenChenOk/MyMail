@@ -31,83 +31,88 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_subject_email_detail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:lines="2"
-            android:padding="7dp"
-            android:text="主题"
-            android:textColor="#000"
-            android:textSize="19sp" />
+        android:layout_marginTop="60dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_subject_email_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="2"
+                android:padding="7dp"
+                android:text="主题"
+                android:textColor="#000"
+                android:textSize="19sp" />
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:padding="5dp">
 
-                <ViewStub
-                    android:id="@+id/vs_email_detail"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout="@layout/vs_detail_layout" />
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ViewStub
+                        android:id="@+id/vs_email_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout="@layout/vs_detail_layout" />
+
+                    <TextView
+                        android:id="@+id/tv_sender_show_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:text="发件人"
+                        android:textColor="@color/green" />
+
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_sender_show_detail"
+                    android:id="@+id/tv_detail_email_detail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="发件人"
-                    android:textColor="@color/green" />
+                    android:layout_marginEnd="5dp"
+                    android:text="详情"
+                    android:textColor="#483D8B"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="#eee" />
+
             <TextView
-                android:id="@+id/tv_detail_email_detail"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_content_email_detail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:text="内容"
+                android:textColor="#000"
+                android:textSize="18sp" />
+
+            <ViewStub
+                android:id="@+id/vs_attachment_email_detail"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="5dp"
-                android:text="详情"
-                android:textColor="#483D8B"
-                android:textSize="15sp" />
+                android:layout="@layout/vs_attachment_info_layout" />
 
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:background="#eee" />
-
-        <TextView
-            android:id="@+id/tv_content_email_detail"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="1"
-            android:padding="10dp"
-            android:text="内容"
-            android:textColor="#000"
-            android:textSize="18sp" />
-
-        <ViewStub
-            android:id="@+id/vs_attachment_email_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout="@layout/vs_attachment_info_layout"/>
-
-    </LinearLayout>
+    </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -23,7 +23,6 @@ import com.chen.fy.mymail.utils.DateUtils;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 
-import java.io.File;
 import java.util.List;
 
 /**
