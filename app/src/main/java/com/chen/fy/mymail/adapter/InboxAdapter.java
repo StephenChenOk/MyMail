@@ -89,7 +89,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.ViewHolder> 
      */
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        CircleImageView civHeadIcon;
+        ImageView civHeadIcon;
         TextView tvName;
         TextView tvSubject;
         TextView tvContent;

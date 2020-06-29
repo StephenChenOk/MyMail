@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,7 +53,7 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         SentItem sentItem = list.get(i);
 
-        Glide.with(context).load(R.drawable.user_test).into(viewHolder.civHeadIcon);
+        Glide.with(context).load(R.drawable.user_1).into(viewHolder.civHeadIcon);
         viewHolder.tvName.setText(sentItem.getRecipientAddress());
         viewHolder.tvSubject.setText(sentItem.getSubject());
         viewHolder.tvContent.setText(sentItem.getContent());
@@ -93,7 +94,7 @@ public class SentAdapter extends RecyclerView.Adapter<SentAdapter.ViewHolder> {
      */
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        CircleImageView civHeadIcon;
+        ImageView civHeadIcon;
         TextView tvName;
         TextView tvSubject;
         TextView tvContent;

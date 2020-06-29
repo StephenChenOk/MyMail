@@ -2,14 +2,12 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="85dp"
-        android:background="@color/green"
-        android:fitsSystemWindows="true">
+        android:layout_height="88dp"
+        android:background="@color/green">
 
         <ImageView
             android:id="@+id/iv_return_contact_person_info"
@@ -43,7 +41,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="80dp">
+        android:layout_marginTop="88dp">
 
         <TextView
             android:id="@+id/tv_name_contact_person_info"
@@ -64,7 +62,7 @@
             android:id="@+id/civ_head_icon_contact_person_info"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:src="@drawable/user_test"
+            android:src="@drawable/user_1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"

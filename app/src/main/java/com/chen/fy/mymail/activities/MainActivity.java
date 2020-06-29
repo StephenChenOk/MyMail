@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        UiUtils.changeStatusBarTextImgColor(this,true);
+        UiUtils.changeStatusBarTextImgColor(this,false);
         initView();
         applyPermission();
         Bmob.initialize(this,"13b8b672c0e0fb9a00941c5694375ba4");

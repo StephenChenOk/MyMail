@@ -1,10 +1,8 @@
 package com.chen.fy.mymail.asyncTasks;
 
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.provider.MediaStore;
+import android.util.Log;
 
 import com.chen.fy.mymail.activities.WriteEmailActivity;
 
@@ -108,7 +106,7 @@ public class SendAsyncTask extends AsyncTask<String, Integer, String> {
     }
 
     /**
-     * 获得创建一封邮件的实例对象
+     * 获得创建一封邮件的实例对象（无附件）
      */
     private MimeMessage getMimeMessage(String recipientAddress, String subject, String content
             , Session session) throws Exception {
@@ -126,7 +124,9 @@ public class SendAsyncTask extends AsyncTask<String, Integer, String> {
         //设置邮件主题
         msg.setSubject(subject, "UTF-8");
         //设置邮件正文
-        msg.setContent(content, "text/html;charset=UTF-8");
+        Log.d("qingge",content);
+        msg.setContent(content, "text/plain;charset=UTF-8");
+//        msg.setText();
         //设置邮件的发送时间,默认立即发送
         msg.setSentDate(new Date());
 
@@ -152,14 +152,10 @@ public class SendAsyncTask extends AsyncTask<String, Integer, String> {
         //4.设置邮件主题
         msg.setSubject(subject, "UTF-8");
 
-        //下面是设置邮件正文
-        msg.setContent(content, "text/html;charset=UTF-8");
-
-        //在文本中插入图片
-        //MimeBodyPart text_image = addPhoto();
-
-        // 5. 创建附件"节点"
+        // 5. 创建"节点"，附件和正文
         MimeBodyPart attachment = new MimeBodyPart();
+        MimeBodyPart contentBody = new MimeBodyPart();
+
         // 读取本地文件
         DataHandler dataHandler = new DataHandler(new FileDataSource(filePath));
         // 将附件数据添加到"节点"
@@ -167,14 +163,15 @@ public class SendAsyncTask extends AsyncTask<String, Integer, String> {
         // 设置附件的文件名（需要编码）
         attachment.setFileName(MimeUtility.encodeText(dataHandler.getName()));
 
-        // 6. 设置（文本+图片）和 附件 的关系（合成一个大的混合"节点" / Multipart ）
-        MimeMultipart mm = new MimeMultipart();
-        mm.addBodyPart(attachment);     // 如果有多个附件，可以创建多个多次添加
-        // mm.setSubType("mixed");         // 混合关系
+        contentBody.setContent(content, "text/plain;charset=UTF-8");
 
-        // 11. 设置整个邮件的关系（将最终的混合"节点"作为邮件的内容添加到邮件对象）
+        // 6. 设置（文本+图片）和 附件 的关系（合成一个大的混合"节点" / Multipart ）
+        MimeMultipart mm = new MimeMultipart("mixed");
+        mm.addBodyPart(attachment);     // 如果有多个附件，可以创建多个多次添加
+        mm.addBodyPart(contentBody);
+
+        // 7. 设置整个邮件的关系（将最终的混合"节点"作为邮件的内容添加到邮件对象）
         msg.setContent(mm);
-        //设置邮件的发送时间,默认立即发送
 
         return msg;
     }

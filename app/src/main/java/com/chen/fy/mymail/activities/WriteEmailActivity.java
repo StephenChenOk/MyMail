@@ -26,6 +26,7 @@ import com.chen.fy.mymail.beans.SentItem;
 import com.chen.fy.mymail.utils.FileUtils;
 import com.chen.fy.mymail.utils.GlideEngine;
 import com.chen.fy.mymail.utils.UiUtils;
+import com.chen.fy.mymail.utils.ZoomImageLoader;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 import com.zhihu.matisse.Matisse;
@@ -146,7 +147,16 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
                 }
                 isShow = !isShow;
                 break;
+            case R.id.ll_add_attachment_box:
+                new XPopup.Builder(ivAttachment.getContext())
+                        .asImageViewer(
+                                ivAttachment
+                                , mAttachmentUri
+                                , new ZoomImageLoader())
+                        .show();
+                break;
         }
+
     }
 
     //初始化添加附件ViewStub
@@ -157,6 +167,8 @@ public class WriteEmailActivity extends AppCompatActivity implements View.OnClic
         List<Uri> mSelected = Matisse.obtainResult(data);
         mAttachmentUri = mSelected.get(0);
         Glide.with(this).load(mAttachmentUri).into(ivAttachment);
+
+        findViewById(R.id.ll_add_attachment_box).setOnClickListener(this);
     }
 
     //发送邮件

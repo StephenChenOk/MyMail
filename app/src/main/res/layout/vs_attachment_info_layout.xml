@@ -11,7 +11,7 @@
         android:id="@+id/iv_logo_attachment_info"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/user_test" />
+        android:src="@drawable/user_1" />
 
     <LinearLayout
         android:layout_width="0dp"

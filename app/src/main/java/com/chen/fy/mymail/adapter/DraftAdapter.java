@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class DraftAdapter extends RecyclerView.Adapter<DraftAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         DraftItem draftItem = list.get(i);
 
-        Glide.with(context).load(R.drawable.user_test).into(viewHolder.civHeadIcon);
+        Glide.with(context).load(R.drawable.user_1).into(viewHolder.civHeadIcon);
         viewHolder.tvName.setText(draftItem.getRecipientAddress());
         viewHolder.tvSubject.setText(draftItem.getSubject());
         viewHolder.tvContent.setText(draftItem.getContent());
@@ -87,7 +88,7 @@ public class DraftAdapter extends RecyclerView.Adapter<DraftAdapter.ViewHolder> 
      */
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        CircleImageView civHeadIcon;
+        ImageView civHeadIcon;
         TextView tvName;
         TextView tvSubject;
         TextView tvContent;

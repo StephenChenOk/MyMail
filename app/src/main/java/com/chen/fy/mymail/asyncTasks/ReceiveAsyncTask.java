@@ -74,6 +74,10 @@ public class ReceiveAsyncTask extends AsyncTask<File, Integer, List<InboxItem>> 
         }
     }
 
+    /**
+     * 接收邮件
+     * @param file 用来存储邮件邮件
+     */
     private List<InboxItem> receiveMail(File file) throws Exception {
 
         ArrayList<InboxItem> inboxItems = new ArrayList<>();
@@ -116,13 +120,12 @@ public class ReceiveAsyncTask extends AsyncTask<File, Integer, List<InboxItem>> 
             saveAttachment(message, attachmentFile);
 
             InboxItem inboxItem = new InboxItem(
-                    R.drawable.user_test
+                    R.drawable.user_1
                     , fromAddress
                     , subject
                     , sbContent.toString()
                     , date);
             if (attachmentFile.length() > 0) {
-                Log.d("hahahaha", ":" + attachmentFile.length());
                 inboxItem.setFile(attachmentFile);
             }
             inboxItems.add(inboxItem);
@@ -152,16 +155,12 @@ public class ReceiveAsyncTask extends AsyncTask<File, Integer, List<InboxItem>> 
         //如果是文本类型的附件，通过getContent方法可以取到文本内容，但这不是我们需要的结果，所以在这里要做判断
         boolean isContainTextAttach = part.getContentType().indexOf("name") > 0;
         if (part.isMimeType("text/plain") && !isContainTextAttach) {
-            Log.d("chenchen", "111");
             content.append(part.getContent().toString());
         } else if (part.isMimeType("text/html") && !isContainTextAttach) {
-            Log.d("chenchen", "222");
             //content.append(part.getContent().toString());
         } else if (part.isMimeType("message/rfc822")) {
-            Log.d("chenchen", "333");
             getMailTextContent((Part) part.getContent(), content);
         } else if (part.isMimeType("multipart/*")) {
-            Log.d("chenchen", "444");
             Multipart multipart = (Multipart) part.getContent();
             int partCount = multipart.getCount();
             for (int i = 0; i < partCount; i++) {
@@ -170,75 +169,6 @@ public class ReceiveAsyncTask extends AsyncTask<File, Integer, List<InboxItem>> 
             }
         }
     }
-
-//    /**
-//     * 解析综合数据
-//     * @param part 邮件
-//     */
-//    private static String getAllMultipart(Part part) throws Exception {
-//        String contentType = part.getContentType();
-//        int index = contentType.indexOf("name");
-//        boolean conName = false;
-//        if (index != -1) {
-//            conName = true;
-//        }
-//        //判断part类型
-//        if (part.isMimeType("text/plain") && !conName) {
-//            return (String) part.getContent();
-//        } else if (part.isMimeType("text/html") && !conName) {
-//            return (String) part.getContent();
-//        }
-////         else if (part.isMimeType("multipart/*")) {
-////            Multipart multipart = (Multipart) part.getContent();
-////            int counts = multipart.getCount();
-////            for (int i = 0; i < counts; i++) {
-////                //递归获取数据
-////                getAllMultipart(multipart.getBodyPart(i));
-////                //附件可能是截图或上传的(图片或其他数据)
-////                if (multipart.getBodyPart(i).getDisposition() != null) {
-////                    //附件为截图
-////                    if (multipart.getBodyPart(i).isMimeType("image/*")) {
-////                        InputStream is = multipart.getBodyPart(i)
-////                                .getInputStream();
-////                        String name = multipart.getBodyPart(i).getFileName();
-////                        String fileName;
-////                        //截图图片
-////                        if(name.startsWith("=?")){
-////                            fileName = name.substring(name.lastIndexOf(".") - 1,name.lastIndexOf("?="));
-////                        }else{
-////                            //上传图片
-////                            fileName = name;
-////                        }
-////
-////                        FileOutputStream fos = new FileOutputStream("D:\\"
-////                                + fileName);
-////                        int len = 0;
-////                        byte[] bys = new byte[1024];
-////                        while ((len = is.read(bys)) != -1) {
-////                            fos.write(bys,0,len);
-////                        }
-////                        fos.close();
-////                    } else {
-////                        //其他附件
-////                        InputStream is = multipart.getBodyPart(i)
-////                                .getInputStream();
-////                        String name = multipart.getBodyPart(i).getFileName();
-////                        FileOutputStream fos = new FileOutputStream("D:\\"
-////                                + name);
-////                        int len = 0;
-////                        byte[] bys = new byte[1024];
-////                        while ((len = is.read(bys)) != -1) {
-////                            fos.write(bys,0,len);
-////                        }
-////                        fos.close();
-////                    }
-////                }
-////            }
-////        }else if (part.isMimeType("message/rfc822")) {
-////            getAllMultipart((Part) part.getContent());
-////        }
-//        return "内容解析出错";
-//    }
 
     /**
      * 保存附件

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         ContactPerson contactPerson = mLists.get(i);
 
-        Glide.with(mContext).load(R.drawable.user_test).into(viewHolder.civHeadIcon);
+        Glide.with(mContext).load(R.drawable.user_1).into(viewHolder.civHeadIcon);
         viewHolder.tvName.setText(contactPerson.getName());
         viewHolder.tvAddress.setText(contactPerson.getAddress());
 
@@ -75,7 +76,7 @@ public class AddressBookAdapter extends RecyclerView.Adapter<AddressBookAdapter.
      */
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        CircleImageView civHeadIcon;
+        ImageView civHeadIcon;
         TextView tvName;
         TextView tvAddress;
 

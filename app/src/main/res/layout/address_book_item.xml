@@ -11,11 +11,11 @@
         android:padding="12dp"
         android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/civ_head_icon_address"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/user_test" />
+            android:src="@drawable/user_1" />
 
         <LinearLayout
             android:layout_width="0dp"

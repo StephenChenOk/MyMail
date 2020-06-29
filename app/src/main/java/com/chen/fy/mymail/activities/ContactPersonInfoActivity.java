@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.chen.fy.mymail.R;
 import com.chen.fy.mymail.beans.ContactPerson;
-import com.google.android.material.snackbar.Snackbar;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.core.BasePopupView;
 
@@ -62,7 +61,7 @@ public class ContactPersonInfoActivity extends AppCompatActivity implements View
             mAddress = getIntent().getStringExtra("address");
         }
 
-        Glide.with(this).load(R.drawable.user_test).into(civHeadIcon);
+        Glide.with(this).load(R.drawable.user_1).into(civHeadIcon);
         tvName.setText(mName);
         tvAddress.setText(mAddress);
     }
